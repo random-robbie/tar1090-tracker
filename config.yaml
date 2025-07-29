@@ -1,0 +1,30 @@
+---
+name: "Tar1090 Aircraft Tracker"
+version: "1.0.0"
+slug: "local_tar1090"
+description: "Displays aircraft from tar1090 on an interactive map"
+startup: application
+boot: auto
+host_network: true
+init: false
+build: true
+ports:
+  8099/tcp: 8099
+ports_description:
+  8099/tcp: "Web interface for aircraft map"
+options:
+  tar1090_host: "192.168.1.175"
+  tar1090_port: 8080
+  update_interval: 1
+  show_history: true
+  map_center_lat: 40.7128
+  map_center_lon: -74.0060
+  map_zoom: 8
+schema:
+  tar1090_host: str
+  tar1090_port: port
+  update_interval: int(1,60)
+  show_history: bool
+  map_center_lat: float(-90.0,90.0)
+  map_center_lon: float(-180.0,180.0)
+  map_zoom: int(1,18)

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tar1090 Aircraft Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="header">
+        <h1>Aircraft Tracker</h1>
+        <div id="stats">
+            <span id="aircraft-count">0 aircraft</span>
+            <span id="last-update">Last update: --</span>
+            <span id="connection-status" class="status-disconnected">Disconnected</span>
+        </div>
+    </div>
+    
+    <div id="controls">
+        <button id="toggle-history">Toggle History</button>
+        <button id="center-map">Center Map</button>
+        <select id="map-layer">
+            <option value="osm">OpenStreetMap</option>
+            <option value="satellite">Satellite</option>
+        </select>
+    </div>
+    
+    <div id="map"></div>
+    
+    <div id="aircraft-list">
+        <h3>Aircraft List</h3>
+        <div id="aircraft-items"></div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
