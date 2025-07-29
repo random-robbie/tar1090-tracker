@@ -68,28 +68,120 @@ Once running (either method), integrate into your HA dashboard:
 
 The best way to integrate aircraft tracking into your Home Assistant dashboard is using the **Webpage Card** method (Option 1). However, if you want aircraft data as Home Assistant entities:
 
-#### Basic Aircraft Sensor
-Add this to your `configuration.yaml`:
+#### Native Home Assistant Map Integration
+
+To show aircraft on Home Assistant's built-in map card, add this to your `configuration.yaml`:
 
 ```yaml
 # Aircraft data sensor
 sensor:
   - platform: rest
-    resource: http://192.168.1.212:8099/api/stats
-    name: aircraft_stats
+    resource: http://192.168.1.212:8099/api/aircraft
+    name: aircraft_data
     json_attributes:
-      - total_aircraft
-      - aircraft_with_position
-      - aircraft_with_callsign
-    value_template: "{{ value_json.total_aircraft }}"
+      - aircraft
+    value_template: "{{ value_json.aircraft | length }}"
     unit_of_measurement: "aircraft"
-    scan_interval: 5
+    scan_interval: 2
+
+# Template device trackers for each aircraft
+template:
+  - sensor:
+      - name: "Aircraft Count"
+        state: "{{ state_attr('sensor.aircraft_data', 'aircraft') | length if state_attr('sensor.aircraft_data', 'aircraft') else 0 }}"
+        unit_of_measurement: "aircraft"
+
+# Device trackers for up to 10 aircraft
+device_tracker:
+  - platform: template
+    trackers:
+      aircraft_1:
+        friendly_name: "Aircraft 1"
+        latitude_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 1 and aircraft[0].lat %}
+            {{ aircraft[0].lat }}
+          {% endif %}
+        longitude_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 1 and aircraft[0].lon %}
+            {{ aircraft[0].lon }}
+          {% endif %}
+        attributes_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 1 %}
+            {
+              "callsign": "{{ aircraft[0].flight | default('Unknown') }}",
+              "altitude": "{{ aircraft[0].alt_baro | default('N/A') }} ft",
+              "speed": "{{ aircraft[0].gs | default('N/A') }} kts",
+              "hex": "{{ aircraft[0].hex }}"
+            }
+          {% endif %}
+          
+      aircraft_2:
+        friendly_name: "Aircraft 2"
+        latitude_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 2 and aircraft[1].lat %}
+            {{ aircraft[1].lat }}
+          {% endif %}
+        longitude_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 2 and aircraft[1].lon %}
+            {{ aircraft[1].lon }}
+          {% endif %}
+        attributes_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 2 %}
+            {
+              "callsign": "{{ aircraft[1].flight | default('Unknown') }}",
+              "altitude": "{{ aircraft[1].alt_baro | default('N/A') }} ft", 
+              "speed": "{{ aircraft[1].gs | default('N/A') }} kts",
+              "hex": "{{ aircraft[1].hex }}"
+            }
+          {% endif %}
+          
+      aircraft_3:
+        friendly_name: "Aircraft 3"
+        latitude_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 3 and aircraft[2].lat %}
+            {{ aircraft[2].lat }}
+          {% endif %}
+        longitude_template: >
+          {% set aircraft = state_attr('sensor.aircraft_data', 'aircraft') %}
+          {% if aircraft and aircraft|length >= 3 and aircraft[2].lon %}
+            {{ aircraft[2].lon }}
+          {% endif %}
+          
+      # Add aircraft_4 through aircraft_10 following the same pattern...
 ```
 
-This creates a sensor showing aircraft count that you can use in:
-- **Lovelace cards** for displaying aircraft statistics
-- **Automations** triggered by aircraft presence
-- **History graphs** showing aircraft activity over time
+**Then add this map card to your dashboard:**
+
+```yaml
+type: map
+entities:
+  - device_tracker.aircraft_1
+  - device_tracker.aircraft_2
+  - device_tracker.aircraft_3
+  - device_tracker.aircraft_4
+  - device_tracker.aircraft_5
+  - device_tracker.aircraft_6
+  - device_tracker.aircraft_7
+  - device_tracker.aircraft_8
+  - device_tracker.aircraft_9
+  - device_tracker.aircraft_10
+auto_fit: true
+default_zoom: 8
+title: Live Aircraft Map
+theme_mode: auto
+```
+
+**Note:** This method shows aircraft as points on the map but has limitations:
+- No flight trails or detailed aircraft information
+- Less interactive than the full web interface
+- Updates limited to Home Assistant's sensor scan intervals
 
 #### Using the Map Card
 For the best aircraft tracking experience in your dashboard:
