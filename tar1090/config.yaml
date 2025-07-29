@@ -1,8 +1,14 @@
 ---
 name: "Tar1090 Aircraft Tracker"
 version: "1.0.0"
-slug: "local_tar1090"
+slug: "tar1090"
 description: "Displays aircraft from tar1090 on an interactive map"
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
 startup: application
 boot: auto
 host_network: true
@@ -25,6 +31,6 @@ schema:
   tar1090_port: port
   update_interval: int(1,60)
   show_history: bool
-  map_center_lat: float(-90.0,90.0)
-  map_center_lon: float(-180.0,180.0)
+  map_center_lat: float
+  map_center_lon: float
   map_zoom: int(1,18)
