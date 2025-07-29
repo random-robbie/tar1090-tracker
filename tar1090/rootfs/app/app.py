@@ -5,11 +5,12 @@ import json
 import time
 import threading
 from datetime import datetime
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 import requests
 import logging
 
-app = Flask(__name__)
+# Create Flask app with support for Home Assistant ingress
+app = Flask(__name__, static_folder='/var/www/tar1090', static_url_path='')
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -121,6 +122,16 @@ def get_stats():
         }
         
         return jsonify(stats)
+
+@app.route('/')
+def index():
+    """Serve the main page"""
+    return send_from_directory(app.static_folder, 'index.html')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+    """Serve static files"""
+    return send_from_directory(app.static_folder, filename)
 
 if __name__ == '__main__':
     logger.info("Starting Tar1090 Aircraft Tracker API")
