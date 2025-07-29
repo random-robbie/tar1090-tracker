@@ -66,6 +66,20 @@ class AircraftTracker {
             );
         });
 
+        // Toggle aircraft list button
+        document.getElementById('toggle-list').addEventListener('click', () => {
+            const aircraftList = document.getElementById('aircraft-list');
+            const toggleBtn = document.getElementById('toggle-list');
+            
+            if (aircraftList.style.display === 'none') {
+                aircraftList.style.display = 'block';
+                toggleBtn.textContent = 'Hide Aircraft List';
+            } else {
+                aircraftList.style.display = 'none';
+                toggleBtn.textContent = 'Show Aircraft List';
+            }
+        });
+
         // Map layer selector
         document.getElementById('map-layer').addEventListener('change', (e) => {
             const layer = e.target.value;
@@ -155,15 +169,19 @@ class AircraftTracker {
             // Update popup content
             marker.setPopupContent(this.createPopupContent(aircraft));
         } else {
-            // Create aircraft icon
+            // Create aircraft icon with proper rotation and size based on aircraft type
+            const iconSize = this.getAircraftIconSize(aircraft);
             const aircraftIcon = L.divIcon({
-                html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" style="transform: rotate(${aircraft.track || 0}deg);">
-                    <path fill="${this.getAircraftColor(aircraft)}" d="M12 2L13.09 8.26L19 7L14.95 12L19 17L13.09 15.74L12 22L10.91 15.74L5 17L9.05 12L5 7L10.91 8.26L12 2Z"/>
-                    <path fill="#ffffff" stroke="#000000" stroke-width="0.5" d="M12 4L12.5 9L16 8.5L13 12L16 15.5L12.5 15L12 20L11.5 15L8 15.5L11 12L8 8.5L11.5 9L12 4Z"/>
-                </svg>`,
+                html: `<div class="aircraft-icon-container" style="transform: rotate(${aircraft.track || 0}deg);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${iconSize}" height="${iconSize}">
+                        <path fill="${this.getAircraftColor(aircraft)}" d="M12 1L14 8L22 6L15 12L22 18L14 16L12 23L10 16L2 18L9 12L2 6L10 8L12 1Z"/>
+                        <path fill="#ffffff" stroke="#000000" stroke-width="0.3" d="M12 2.5L13.5 8.5L19.5 7L14 12L19.5 17L13.5 15.5L12 21.5L10.5 15.5L4.5 17L10 12L4.5 7L10.5 8.5L12 2.5Z"/>
+                        <circle cx="12" cy="12" r="1.5" fill="#ff4444" opacity="0.8"/>
+                    </svg>
+                </div>`,
                 className: 'aircraft-marker',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10]
+                iconSize: [iconSize, iconSize],
+                iconAnchor: [iconSize/2, iconSize/2]
             });
 
             // Create new marker
@@ -250,6 +268,27 @@ class AircraftTracker {
         if (altitude < 15000) return '#ffaa00';     // Orange - Medium altitude  
         if (altitude < 25000) return '#00aaff';     // Blue - High altitude
         return '#00ff88';                           // Green - Very high altitude
+    }
+
+    getAircraftIconSize(aircraft) {
+        // Size based on aircraft category or type
+        const category = aircraft.category || '';
+        const type = aircraft.t || '';
+        
+        // Large aircraft (A380, B747, etc.)
+        if (type.includes('A38') || type.includes('B74') || category === 'A7') return 28;
+        
+        // Wide-body aircraft (B777, A330, etc.)
+        if (type.includes('B77') || type.includes('A33') || type.includes('A34') || category === 'A5') return 24;
+        
+        // Narrow-body aircraft (A320, B737, etc.)  
+        if (type.includes('A32') || type.includes('B73') || category === 'A3') return 20;
+        
+        // Regional/Small aircraft
+        if (category === 'A1' || category === 'A2') return 16;
+        
+        // Default size
+        return 20;
     }
 
     createPopupContent(aircraft) {
