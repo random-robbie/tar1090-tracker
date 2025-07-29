@@ -64,23 +64,60 @@ Once running (either method), integrate into your HA dashboard:
    - **Icon:** `mdi:airplane`
 3. This creates a dedicated full-screen aircraft tracking tab
 
-### Option 3: Map Integration
-For basic aircraft positions on HA's built-in map:
-1. Create `device_tracker` entities using the REST API
-2. Add to `configuration.yaml`:
-   ```yaml
-   device_tracker:
-     - platform: rest
-       resource: http://your-ha-ip:8099/api/aircraft
-       name: aircraft_tracker
-       json_attributes_path: "$.aircraft[*]"
-       json_attributes:
-         - hex
-         - flight  
-         - lat
-         - lon
-         - alt_baro
-   ```
+### Option 3: Map Card Integration (Recommended for Dashboard)
+
+The best way to integrate aircraft tracking into your Home Assistant dashboard is using the **Webpage Card** method (Option 1). However, if you want aircraft data as Home Assistant entities:
+
+#### Basic Aircraft Sensor
+Add this to your `configuration.yaml`:
+
+```yaml
+# Aircraft data sensor
+sensor:
+  - platform: rest
+    resource: http://192.168.1.212:8099/api/stats
+    name: aircraft_stats
+    json_attributes:
+      - total_aircraft
+      - aircraft_with_position
+      - aircraft_with_callsign
+    value_template: "{{ value_json.total_aircraft }}"
+    unit_of_measurement: "aircraft"
+    scan_interval: 5
+```
+
+This creates a sensor showing aircraft count that you can use in:
+- **Lovelace cards** for displaying aircraft statistics
+- **Automations** triggered by aircraft presence
+- **History graphs** showing aircraft activity over time
+
+#### Using the Map Card
+For the best aircraft tracking experience in your dashboard:
+
+1. **Add a Webpage Card** (Option 1 above) - This shows the full interactive map
+2. **Set card height** to `400px` or more for better visibility
+3. **Position it prominently** on your main dashboard
+
+#### Alternative: Browser Mod Integration
+If you have [Browser Mod](https://github.com/thomasloven/hass-browser_mod) installed:
+
+```yaml
+# In a button card or automation
+service: browser_mod.popup
+data:
+  title: "Aircraft Tracker"
+  content:
+    type: iframe
+    url: "http://192.168.1.212:8099"
+    aspect_ratio: "16:9"
+```
+
+**Why Webpage Card is Recommended:**
+- ✅ Full interactive map with aircraft details
+- ✅ Real-time updates and flight trails  
+- ✅ Aircraft information on click
+- ✅ No complex configuration needed
+- ✅ Works immediately after tracker installation
 
 ## Configuration
 
