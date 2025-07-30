@@ -127,8 +127,8 @@ def get_config():
         "update_interval": UPDATE_INTERVAL,
         "show_history": SHOW_HISTORY,
         "auto_center": AUTO_CENTER,
-        "map_center_lat": get_config_value('MAP_CENTER_LAT', 40.7128, float),
-        "map_center_lon": get_config_value('MAP_CENTER_LON', -74.0060, float),
+        "map_center_lat": get_config_value('MAP_CENTER_LAT', 54.7023, float),
+        "map_center_lon": get_config_value('MAP_CENTER_LON', -3.2765, float),
         "map_zoom": get_config_value('MAP_ZOOM', 8, int)
     })
 

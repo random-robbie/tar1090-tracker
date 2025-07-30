@@ -177,24 +177,43 @@ body {
     background: transparent !important;
     border: none !important;
     border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+.aircraft-marker div {
+    background: transparent !important;
+    border: none !important;
 }
 
 .aircraft-icon-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-    filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.5));
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: transform 0.3s ease !important;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.7)) !important;
+    pointer-events: auto !important;
+}
+
+.aircraft-icon-container svg {
+    display: block !important;
+    overflow: visible !important;
 }
 
 .aircraft-icon-container:hover {
-    transform: scale(1.2) !important;
-    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
+    filter: drop-shadow(3px 3px 6px rgba(0,0,0,0.9)) !important;
+    transform: scale(1.15) !important;
 }
 
 .aircraft-marker.selected .aircraft-icon-container {
     transform: scale(1.3) !important;
-    filter: drop-shadow(3px 3px 6px rgba(255,68,68,0.8));
+    filter: drop-shadow(4px 4px 8px rgba(255,68,68,0.8)) !important;
+}
+
+/* Leaflet marker overrides */
+.leaflet-marker-icon.aircraft-marker {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
 }
 
 /* Scrollbar styling for aircraft list */

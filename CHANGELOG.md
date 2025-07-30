@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.11] - 2025-07-30
+
+### Added
+- Improved aircraft icon visibility and rendering
+- Better SVG aircraft icons with enhanced styling
+
+### Changed
+- Changed default map center from New York to UK (54.7023, -3.2765)
+- Enhanced aircraft icon CSS with stronger drop shadows and better contrast
+- Improved aircraft icon rotation handling for smoother updates
+
+### Fixed
+- Fixed missing aircraft icons on map display
+- Resolved SVG rendering issues in Leaflet markers
+- Enhanced icon visibility with better styling and positioning
+
 ## [1.0.10] - 2025-07-30
 
 ### Fixed

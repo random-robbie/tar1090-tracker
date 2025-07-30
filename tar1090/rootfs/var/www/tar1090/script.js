@@ -46,8 +46,8 @@ class AircraftTracker {
         // If all fail, use defaults
         console.warn('Using default configuration');
         this.config = {
-            map_center_lat: 40.7128,
-            map_center_lon: -74.0060,
+            map_center_lat: 54.7023,
+            map_center_lon: -3.2765,
             map_zoom: 8,
             update_interval: 1
         };
@@ -204,9 +204,9 @@ class AircraftTracker {
             
             // Update rotation if track is available
             if (aircraft.track !== undefined) {
-                const iconElement = marker.getElement();
-                if (iconElement) {
-                    iconElement.style.transform = `translate(-50%, -50%) rotate(${aircraft.track}deg)`;
+                const iconContainer = marker.getElement()?.querySelector('.aircraft-icon-container');
+                if (iconContainer) {
+                    iconContainer.style.transform = `rotate(${aircraft.track}deg)`;
                 }
             }
             
@@ -220,12 +220,18 @@ class AircraftTracker {
         } else {
             // Create aircraft icon with proper rotation and size based on aircraft type
             const iconSize = this.getAircraftIconSize(aircraft);
+            const rotation = aircraft.track || 0;
+            const color = this.getAircraftColor(aircraft);
+            
             const aircraftIcon = L.divIcon({
-                html: `<div class="aircraft-icon-container" style="transform: rotate(${aircraft.track || 0}deg);">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${iconSize}" height="${iconSize}">
-                        <path fill="${this.getAircraftColor(aircraft)}" d="M12 1L14 8L22 6L15 12L22 18L14 16L12 23L10 16L2 18L9 12L2 6L10 8L12 1Z"/>
-                        <path fill="#ffffff" stroke="#000000" stroke-width="0.3" d="M12 2.5L13.5 8.5L19.5 7L14 12L19.5 17L13.5 15.5L12 21.5L10.5 15.5L4.5 17L10 12L4.5 7L10.5 8.5L12 2.5Z"/>
-                        <circle cx="12" cy="12" r="1.5" fill="#ff4444" opacity="0.8"/>
+                html: `<div class="aircraft-icon-container" style="transform: rotate(${rotation}deg); width: ${iconSize}px; height: ${iconSize}px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${iconSize}" height="${iconSize}" style="display: block;">
+                        <!-- Aircraft body -->
+                        <path fill="${color}" stroke="#000" stroke-width="0.5" d="M12 2L13 9L20 7L13.5 12L20 17L13 15L12 22L11 15L4 17L10.5 12L4 7L11 9L12 2Z"/>
+                        <!-- Aircraft highlight -->
+                        <path fill="#ffffff" stroke="#000000" stroke-width="0.2" d="M12 3L12.5 8.5L18 7.5L13 12L18 16.5L12.5 15.5L12 21L11.5 15.5L6 16.5L11 12L6 7.5L11.5 8.5L12 3Z"/>
+                        <!-- Center dot -->
+                        <circle cx="12" cy="12" r="1" fill="#ff0000" stroke="#fff" stroke-width="0.5"/>
                     </svg>
                 </div>`,
                 className: 'aircraft-marker',
