@@ -22,12 +22,12 @@ class AircraftTracker {
     }
 
     async loadConfig() {
-        // Try different API base URLs for different deployment scenarios
+        // Simplified URL handling for ingress mode
         const apiUrls = [
-            '/api/config',           // Direct access
-            './api/config',          // Relative path
-            'api/config',            // No leading slash
-            '/config'                // Direct route
+            'config',                // Simple relative path (works best in ingress)
+            './config',              // Explicit relative path
+            '/config',               // Absolute path (fallback)
+            'api/config'             // With api prefix (fallback)
         ];
         
         for (const url of apiUrls) {
@@ -123,12 +123,12 @@ class AircraftTracker {
     }
 
     async fetchAPI(endpoint) {
-        // Try different API base URLs for different deployment scenarios
+        // Simplified URL handling for ingress mode
         const apiUrls = [
-            `/api/${endpoint}`,      // Direct access
-            `./api/${endpoint}`,     // Relative path
-            `api/${endpoint}`,       // No leading slash
-            `/${endpoint}`           // Direct route
+            endpoint,                // Simple relative path (works best in ingress)
+            `./${endpoint}`,         // Explicit relative path
+            `/${endpoint}`,          // Absolute path (fallback)
+            `api/${endpoint}`        // With api prefix (fallback)
         ];
         
         for (const url of apiUrls) {

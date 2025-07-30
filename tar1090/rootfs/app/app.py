@@ -99,13 +99,16 @@ def update_aircraft_data():
         
         time.sleep(UPDATE_INTERVAL)
 
+# API routes - both with and without /api/ prefix for compatibility
 @app.route('/aircraft', methods=['GET'])
+@app.route('/api/aircraft', methods=['GET'])
 def get_aircraft():
     """Get current aircraft data"""
     with data_lock:
         return jsonify(aircraft_data)
 
 @app.route('/aircraft/history', methods=['GET'])
+@app.route('/api/aircraft/history', methods=['GET'])
 def get_aircraft_history():
     """Get aircraft history data"""
     if not SHOW_HISTORY:
@@ -115,6 +118,7 @@ def get_aircraft_history():
         return jsonify({"history": aircraft_history})
 
 @app.route('/config', methods=['GET'])
+@app.route('/api/config', methods=['GET'])
 def get_config():
     """Get addon configuration"""
     return jsonify({
@@ -129,6 +133,7 @@ def get_config():
     })
 
 @app.route('/health', methods=['GET'])
+@app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
     return jsonify({
@@ -139,6 +144,7 @@ def health_check():
     })
 
 @app.route('/stats', methods=['GET'])
+@app.route('/api/stats', methods=['GET'])
 def get_stats():
     """Get statistics about the service"""
     with data_lock:

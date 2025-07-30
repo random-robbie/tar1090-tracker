@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.10] - 2025-07-30
+
+### Fixed
+- Fixed API routing issues in Home Assistant ingress mode
+- Resolved all 404 errors for aircraft, stats, and config endpoints
+- Simplified JavaScript API URL patterns for better ingress compatibility
+
+### Technical
+- Added dual route decorators to Flask app (with and without /api/ prefix)
+- Optimized fetchAPI() function to use simple relative paths first
+- Enhanced URL fallback strategy for different deployment scenarios
+
 ## [1.0.9] - 2025-07-30
 
 ### Fixed
