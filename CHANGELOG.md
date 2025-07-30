@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.12] - 2025-07-30
+
+### Added
+- FlightRadar24 integration - click aircraft icons to view on FR24
+- Registration display in aircraft popup details
+- Enhanced aircraft SVG icons with cockpit and wing highlights
+- Right-click and Ctrl+click support for direct FR24 links
+
+### Changed  
+- Improved aircraft icon design with larger, more visible airplane shapes
+- Increased default icon sizes for better visibility (24-36px range)
+- Enhanced SVG with 32x32 viewBox for better scaling
+
+### Fixed
+- Replaced pin-style markers with proper airplane-shaped icons
+- Better aircraft icon visibility and contrast on map
+
 ## [1.0.11] - 2025-07-30
 
 ### Added

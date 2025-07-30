@@ -225,13 +225,15 @@ class AircraftTracker {
             
             const aircraftIcon = L.divIcon({
                 html: `<div class="aircraft-icon-container" style="transform: rotate(${rotation}deg); width: ${iconSize}px; height: ${iconSize}px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${iconSize}" height="${iconSize}" style="display: block;">
-                        <!-- Aircraft body -->
-                        <path fill="${color}" stroke="#000" stroke-width="0.5" d="M12 2L13 9L20 7L13.5 12L20 17L13 15L12 22L11 15L4 17L10.5 12L4 7L11 9L12 2Z"/>
-                        <!-- Aircraft highlight -->
-                        <path fill="#ffffff" stroke="#000000" stroke-width="0.2" d="M12 3L12.5 8.5L18 7.5L13 12L18 16.5L12.5 15.5L12 21L11.5 15.5L6 16.5L11 12L6 7.5L11.5 8.5L12 3Z"/>
-                        <!-- Center dot -->
-                        <circle cx="12" cy="12" r="1" fill="#ff0000" stroke="#fff" stroke-width="0.5"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${iconSize}" height="${iconSize}" style="display: block;">
+                        <!-- Main aircraft body -->
+                        <path fill="${color}" stroke="#000" stroke-width="1" d="M16 4L17.5 12L28 9L19 16L28 23L17.5 20L16 28L14.5 20L4 23L13 16L4 9L14.5 12L16 4Z"/>
+                        <!-- Aircraft cockpit -->
+                        <ellipse cx="16" cy="14" rx="1.5" ry="3" fill="#333" stroke="#000" stroke-width="0.5"/>
+                        <!-- Wing highlights -->
+                        <path fill="rgba(255,255,255,0.3)" stroke="none" d="M16 6L17 11L24 9.5L17 16L24 22.5L17 21L16 26L15 21L8 22.5L15 16L8 9.5L15 11L16 6Z"/>
+                        <!-- Registration marker -->
+                        <circle cx="16" cy="16" r="1.5" fill="#ff0000" stroke="#fff" stroke-width="1"/>
                     </svg>
                 </div>`,
                 className: 'aircraft-marker',
@@ -242,8 +244,37 @@ class AircraftTracker {
             // Create new marker
             const marker = L.marker(position, { icon: aircraftIcon });
             marker.bindPopup(this.createPopupContent(aircraft));
-            marker.addTo(this.map);
             
+            // Add click handler for FlightRadar24 
+            marker.on('click', (e) => {
+                const registration = aircraft.r || aircraft.reg;
+                const callsign = aircraft.flight ? aircraft.flight.trim() : null;
+                
+                // Right-click or Ctrl+click to open FlightRadar24 directly
+                if (e.originalEvent.ctrlKey || e.originalEvent.button === 2) {
+                    e.originalEvent.preventDefault();
+                    if (registration) {
+                        window.open(`https://www.flightradar24.com/data/aircraft/${registration}`, '_blank', 'noopener,noreferrer');
+                    } else if (callsign) {
+                        window.open(`https://www.flightradar24.com/data/flights/${callsign}`, '_blank', 'noopener,noreferrer');
+                    }
+                }
+            });
+            
+            // Add context menu (right-click) handler
+            marker.on('contextmenu', (e) => {
+                e.originalEvent.preventDefault();
+                const registration = aircraft.r || aircraft.reg;
+                const callsign = aircraft.flight ? aircraft.flight.trim() : null;
+                
+                if (registration) {
+                    window.open(`https://www.flightradar24.com/data/aircraft/${registration}`, '_blank', 'noopener,noreferrer');
+                } else if (callsign) {
+                    window.open(`https://www.flightradar24.com/data/flights/${callsign}`, '_blank', 'noopener,noreferrer');
+                }
+            });
+            
+            marker.addTo(this.map);
             this.aircraftMarkers[hex] = marker;
             
             // Initialize trail
@@ -326,24 +357,24 @@ class AircraftTracker {
     }
 
     getAircraftIconSize(aircraft) {
-        // Size based on aircraft category or type
+        // Size based on aircraft category or type - made larger for better visibility
         const category = aircraft.category || '';
         const type = aircraft.t || '';
         
         // Large aircraft (A380, B747, etc.)
-        if (type.includes('A38') || type.includes('B74') || category === 'A7') return 28;
+        if (type.includes('A38') || type.includes('B74') || category === 'A7') return 36;
         
         // Wide-body aircraft (B777, A330, etc.)
-        if (type.includes('B77') || type.includes('A33') || type.includes('A34') || category === 'A5') return 24;
+        if (type.includes('B77') || type.includes('A33') || type.includes('A34') || category === 'A5') return 32;
         
         // Narrow-body aircraft (A320, B737, etc.)  
-        if (type.includes('A32') || type.includes('B73') || category === 'A3') return 20;
+        if (type.includes('A32') || type.includes('B73') || category === 'A3') return 28;
         
         // Regional/Small aircraft
-        if (category === 'A1' || category === 'A2') return 16;
+        if (category === 'A1' || category === 'A2') return 24;
         
-        // Default size
-        return 20;
+        // Default size - increased for better visibility
+        return 28;
     }
 
     createPopupContent(aircraft) {
@@ -352,16 +383,27 @@ class AircraftTracker {
         const speed = aircraft.gs || 'N/A';
         const track = aircraft.track || 'N/A';
         const squawk = aircraft.squawk || 'N/A';
+        const registration = aircraft.r || aircraft.reg || 'N/A';
+        
+        // Create FlightRadar24 link if we have registration or callsign
+        let fr24Link = '';
+        if (registration !== 'N/A') {
+            fr24Link = `<div style="margin-top: 8px;"><a href="https://www.flightradar24.com/data/aircraft/${registration}" target="_blank" rel="noopener noreferrer" style="color: #00aaff; text-decoration: none; font-weight: bold;">📡 View on FlightRadar24</a></div>`;
+        } else if (callsign !== 'N/A') {
+            fr24Link = `<div style="margin-top: 8px;"><a href="https://www.flightradar24.com/data/flights/${callsign}" target="_blank" rel="noopener noreferrer" style="color: #00aaff; text-decoration: none; font-weight: bold;">📡 View on FlightRadar24</a></div>`;
+        }
         
         return `
             <div class="popup-callsign">${callsign}</div>
             <div class="popup-details">
                 <div><strong>Hex:</strong> ${aircraft.hex}</div>
+                ${registration !== 'N/A' ? `<div><strong>Registration:</strong> ${registration}</div>` : ''}
                 <div><strong>Altitude:</strong> ${altitude} ft</div>
                 <div><strong>Speed:</strong> ${speed} kts</div>
                 <div><strong>Track:</strong> ${track}°</div>
                 <div><strong>Squawk:</strong> ${squawk}</div>
                 ${aircraft.category ? `<div><strong>Category:</strong> ${aircraft.category}</div>` : ''}
+                ${fr24Link}
             </div>
         `;
     }
