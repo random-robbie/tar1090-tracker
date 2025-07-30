@@ -1,6 +1,6 @@
 ---
 name: "Tar1090 Aircraft Tracker"
-version: "1.0.8"
+version: "1.0.9"
 slug: "tar1090"
 description: "Displays aircraft from tar1090 on an interactive map"
 arch:

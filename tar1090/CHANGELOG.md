@@ -17,6 +17,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Copied changelog to /tar1090/CHANGELOG.md for proper HA addon store integration
 - Ensured changelog is accessible through HA addon interface
 
+## [1.0.8] - 2025-07-30
+
+### Fixed
+- Fixed web interface API connection issues in Home Assistant ingress mode
+- Resolved "disconnected" status showing despite successful tar1090 connection
+- Added intelligent API URL detection for different deployment scenarios
+
+### Technical
+- Enhanced JavaScript fetchAPI() function with multiple URL fallback strategies
+- Improved error handling for API requests in ingress environments
+- Added comprehensive URL pattern matching for HA integration
+
+## [1.0.7] - 2025-07-30
+
+### Fixed
+- Resolved 502 gateway errors caused by null configuration values
+- Fixed environment variable handling when values come as 'null' strings
+- Improved configuration reading with proper JSON fallback
+
+### Technical
+- Enhanced get_config_value() function with null value detection
+- Added proper error handling for configuration file reading
+- Improved logging for configuration debugging
+
+## [1.0.6] - 2025-07-30
+
+### Fixed
+- Fixed configuration validation errors in Home Assistant
+- Corrected float schema format in config.yaml
+- Added required arch field for multi-architecture support
+
+### Technical
+- Updated config.yaml with proper YAML schema validation
+- Fixed addon structure for Home Assistant compatibility
+
+## [1.0.5] - 2025-07-30
+
+### Added
+- Professional repository structure for Home Assistant addon store
+- Automated release management with version tagging
+- Repository metadata and addon store integration
+
+### Technical
+- Added repository.json for HA addon store compatibility
+- Created release.sh script for automated version management
+- Structured addon files in proper subdirectory
+
+## [1.0.4] - 2025-07-29
+
+### Added
+- Git repository initialization and version control
+- Main branch as default (removed master branch)
+- Comprehensive commit history and changelog integration
+
+### Technical
+- Initialized git repository with proper branching
+- Added .gitignore for Python and Node.js projects
+- Linked commits to changelog documentation
+
 ## [1.0.3] - 2025-07-29
 
 ### Added
