@@ -1,6 +1,6 @@
 ---
 name: "Tar1090 Aircraft Tracker"
-version: "1.0.5"
+version: "1.0.6"
 slug: "tar1090"
 description: "Displays aircraft from tar1090 on an interactive map"
 arch:
@@ -16,6 +16,7 @@ build: true
 ingress: true
 ingress_port: 5000
 panel_icon: mdi:airplane
+icon: mdi:airplane
 options:
   tar1090_host: "192.168.1.100"
   tar1090_port: 8080
