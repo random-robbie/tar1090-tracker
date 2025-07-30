@@ -264,6 +264,35 @@ The tracker provides several REST API endpoints:
 - For standalone, use `http://your-ha-ip:8099`
 - Ensure HTTPS/HTTP protocol matches your HA setup
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes, new features, and bug fixes in each release.
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Release Process
+
+For maintainers, use the release script:
+```bash
+./scripts/release.sh 1.0.4 "Added new feature description"
+```
+
+This will:
+- Update version in config.yaml
+- Add changelog entry  
+- Create git tag
+- Push to GitHub
+- Trigger automated release
+
 ## Support
 
-For issues and feature requests, please use the [GitHub Issues](https://github.com/random-robbie/tar1090-tracker/issues) page.
+- **Issues & Bug Reports**: [GitHub Issues](https://github.com/random-robbie/tar1090-tracker/issues)
+- **Feature Requests**: [GitHub Issues](https://github.com/random-robbie/tar1090-tracker/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/random-robbie/tar1090-tracker/discussions)
+- **Changelog**: [CHANGELOG.md](CHANGELOG.md)
