@@ -16,13 +16,26 @@ app = Flask(__name__, static_folder='/var/www/tar1090', static_url_path='')
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configuration from environment variables with null handling
-def get_env_value(key, default, value_type=str):
-    """Get environment variable with proper null handling"""
-    value = os.getenv(key, default)
-    if value is None or value == 'null' or value == '':
-        value = default
+# Configuration from environment variables with JSON fallback
+def get_config_value(key, default, value_type=str):
+    """Get configuration value from env vars or options.json"""
+    # First try environment variable
+    value = os.getenv(key.upper(), None)
     
+    # If env var is null/empty, try reading from options.json
+    if value is None or value == 'null' or value == '':
+        try:
+            with open('/data/options.json', 'r') as f:
+                config = json.load(f)
+                value = config.get(key.lower(), default)
+                logger.info(f"Read {key} from options.json: {value}")
+        except:
+            logger.warning(f"Could not read options.json, using default for {key}")
+            value = default
+    else:
+        logger.info(f"Read {key} from environment: {value}")
+    
+    # Convert to proper type
     if value_type == int:
         return int(value)
     elif value_type == float:
@@ -32,11 +45,11 @@ def get_env_value(key, default, value_type=str):
     else:
         return str(value)
 
-TAR1090_HOST = get_env_value('TAR1090_HOST', '192.168.1.100')
-TAR1090_PORT = get_env_value('TAR1090_PORT', 8080, int)
-UPDATE_INTERVAL = get_env_value('UPDATE_INTERVAL', 1, int)
-SHOW_HISTORY = get_env_value('SHOW_HISTORY', True, bool)
-AUTO_CENTER = get_env_value('AUTO_CENTER', False, bool)
+TAR1090_HOST = get_config_value('TAR1090_HOST', '192.168.1.100')
+TAR1090_PORT = get_config_value('TAR1090_PORT', 8080, int)
+UPDATE_INTERVAL = get_config_value('UPDATE_INTERVAL', 1, int)
+SHOW_HISTORY = get_config_value('SHOW_HISTORY', True, bool)
+AUTO_CENTER = get_config_value('AUTO_CENTER', False, bool)
 
 # Global variables to store aircraft data
 aircraft_data = {"aircraft": [], "now": 0, "messages": 0}
@@ -110,9 +123,9 @@ def get_config():
         "update_interval": UPDATE_INTERVAL,
         "show_history": SHOW_HISTORY,
         "auto_center": AUTO_CENTER,
-        "map_center_lat": get_env_value('MAP_CENTER_LAT', 40.7128, float),
-        "map_center_lon": get_env_value('MAP_CENTER_LON', -74.0060, float),
-        "map_zoom": get_env_value('MAP_ZOOM', 8, int)
+        "map_center_lat": get_config_value('MAP_CENTER_LAT', 40.7128, float),
+        "map_center_lon": get_config_value('MAP_CENTER_LON', -74.0060, float),
+        "map_zoom": get_config_value('MAP_ZOOM', 8, int)
     })
 
 @app.route('/health', methods=['GET'])

@@ -13,8 +13,12 @@ MAP_ZOOM=$(bashio::config 'map_zoom')
 AUTO_CENTER=$(bashio::config 'auto_center')
 
 bashio::log.info "Starting Tar1090 Aircraft Tracker with Ingress..."
-bashio::log.info "Tar1090 Host: ${TAR1090_HOST}:${TAR1090_PORT}"
-bashio::log.info "Update Interval: ${UPDATE_INTERVAL} seconds"
+bashio::log.info "Configuration debug:"
+bashio::log.info "TAR1090_HOST: ${TAR1090_HOST}"
+bashio::log.info "TAR1090_PORT: ${TAR1090_PORT}"
+bashio::log.info "UPDATE_INTERVAL: ${UPDATE_INTERVAL}"
+bashio::log.info "Options file content:"
+cat /data/options.json
 
 # Export environment variables for Python app
 export TAR1090_HOST
