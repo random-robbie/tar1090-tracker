@@ -43,6 +43,10 @@ def update_aircraft_data():
     """Background thread to continuously update aircraft data"""
     global aircraft_data, aircraft_history
     
+    # Initialize with empty data to prevent 502 errors
+    with data_lock:
+        aircraft_data = {"aircraft": [], "now": 0, "messages": 0}
+    
     while True:
         try:
             new_data = fetch_aircraft_data()
@@ -59,6 +63,8 @@ def update_aircraft_data():
                             aircraft_history.pop(0)
                 
                 logger.info(f"Updated aircraft data: {len(new_data.get('aircraft', []))} aircraft")
+            else:
+                logger.warning("No data received from tar1090 server")
             
         except Exception as e:
             logger.error(f"Error in update thread: {e}")
@@ -130,6 +136,11 @@ def index():
     """Serve the main page"""
     return send_from_directory(app.static_folder, 'index.html')
 
+@app.route('/ping')
+def ping():
+    """Simple ping endpoint for ingress health check"""
+    return "pong"
+
 @app.route('/<path:filename>')
 def static_files(filename):
     """Serve static files"""
@@ -139,9 +150,20 @@ if __name__ == '__main__':
     logger.info("Starting Tar1090 Aircraft Tracker API")
     logger.info(f"Connecting to tar1090 at {TAR1090_HOST}:{TAR1090_PORT}")
     
+    # Test tar1090 connection first
+    try:
+        test_data = fetch_aircraft_data()
+        if test_data:
+            logger.info(f"Successfully connected to tar1090 - found {len(test_data.get('aircraft', []))} aircraft")
+        else:
+            logger.warning("Could not fetch data from tar1090 server - check connection")
+    except Exception as e:
+        logger.error(f"Failed to connect to tar1090 server: {e}")
+    
     # Start background thread for data updates
     update_thread = threading.Thread(target=update_aircraft_data, daemon=True)
     update_thread.start()
     
     # Start Flask app
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    logger.info("Starting Flask server on 0.0.0.0:5000")
+    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
