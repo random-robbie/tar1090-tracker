@@ -10,6 +10,7 @@ SHOW_HISTORY=$(bashio::config 'show_history')
 MAP_CENTER_LAT=$(bashio::config 'map_center_lat')
 MAP_CENTER_LON=$(bashio::config 'map_center_lon')
 MAP_ZOOM=$(bashio::config 'map_zoom')
+AUTO_CENTER=$(bashio::config 'auto_center')
 
 bashio::log.info "Starting Tar1090 Aircraft Tracker with Ingress..."
 bashio::log.info "Tar1090 Host: ${TAR1090_HOST}:${TAR1090_PORT}"
@@ -23,6 +24,7 @@ export SHOW_HISTORY
 export MAP_CENTER_LAT
 export MAP_CENTER_LON
 export MAP_ZOOM
+export AUTO_CENTER
 
 # Start the Python Flask app with ingress support
 cd /app

@@ -17,10 +17,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configuration from environment variables
-TAR1090_HOST = os.getenv('TAR1090_HOST', '192.168.1.175')
+TAR1090_HOST = os.getenv('TAR1090_HOST', '192.168.1.100')
 TAR1090_PORT = int(os.getenv('TAR1090_PORT', '8080'))
 UPDATE_INTERVAL = int(os.getenv('UPDATE_INTERVAL', '1'))
 SHOW_HISTORY = os.getenv('SHOW_HISTORY', 'true').lower() == 'true'
+AUTO_CENTER = os.getenv('AUTO_CENTER', 'false').lower() == 'true'
 
 # Global variables to store aircraft data
 aircraft_data = {"aircraft": [], "now": 0, "messages": 0}
@@ -87,6 +88,7 @@ def get_config():
         "tar1090_port": TAR1090_PORT,
         "update_interval": UPDATE_INTERVAL,
         "show_history": SHOW_HISTORY,
+        "auto_center": AUTO_CENTER,
         "map_center_lat": float(os.getenv('MAP_CENTER_LAT', '40.7128')),
         "map_center_lon": float(os.getenv('MAP_CENTER_LON', '-74.0060')),
         "map_zoom": int(os.getenv('MAP_ZOOM', '8'))

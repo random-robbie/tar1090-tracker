@@ -22,8 +22,15 @@ A Home Assistant add-on that displays aircraft tracking data from a tar1090 serv
    [![Add Repository](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Frandom-robbie%2Ftar1090-tracker)
 
 2. Install the "Tar1090 Aircraft Tracker" add-on
-3. Configure the add-on with your tar1090 server details
-4. Start the add-on
+3. **Configure the add-on** by clicking on the "Configuration" tab:
+   - **Tar1090 Host**: Enter your tar1090 server IP (e.g., `192.168.1.100`)
+   - **Tar1090 Port**: Usually `8080` (default)
+   - **Update Interval**: How often to fetch data in seconds (1-60)
+   - **Show History**: Enable/disable flight trails
+   - **Map Center**: Set your location coordinates for map centering
+   - **Map Zoom**: Initial zoom level (1=world view, 18=street level)
+   - **Auto Center**: Automatically center map on aircraft
+4. Click **Save** and then **Start** the add-on
 5. The add-on will appear in your sidebar with an airplane icon
 
 ### Method 2: Standalone Installation
