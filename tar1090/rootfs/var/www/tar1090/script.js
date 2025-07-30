@@ -22,9 +22,35 @@ class AircraftTracker {
     }
 
     async loadConfig() {
-        const response = await fetch('/api/config');
-        if (!response.ok) throw new Error('Failed to load config');
-        this.config = await response.json();
+        // Try different API base URLs for different deployment scenarios
+        const apiUrls = [
+            '/api/config',           // Direct access
+            './api/config',          // Relative path
+            'api/config',            // No leading slash
+            '/config'                // Direct route
+        ];
+        
+        for (const url of apiUrls) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    this.config = await response.json();
+                    console.log('Config loaded from:', url);
+                    return;
+                }
+            } catch (error) {
+                console.warn(`Failed to load config from ${url}:`, error);
+            }
+        }
+        
+        // If all fail, use defaults
+        console.warn('Using default configuration');
+        this.config = {
+            map_center_lat: 40.7128,
+            map_center_lon: -74.0060,
+            map_zoom: 8,
+            update_interval: 1
+        };
     }
 
     initMap() {
@@ -96,12 +122,35 @@ class AircraftTracker {
         });
     }
 
+    async fetchAPI(endpoint) {
+        // Try different API base URLs for different deployment scenarios
+        const apiUrls = [
+            `/api/${endpoint}`,      // Direct access
+            `./api/${endpoint}`,     // Relative path
+            `api/${endpoint}`,       // No leading slash
+            `/${endpoint}`           // Direct route
+        ];
+        
+        for (const url of apiUrls) {
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    return await response.json();
+                }
+            } catch (error) {
+                console.warn(`Failed to fetch from ${url}:`, error);
+            }
+        }
+        
+        throw new Error(`Failed to fetch ${endpoint} from all URLs`);
+    }
+
     async startDataUpdates() {
         const updateData = async () => {
             try {
                 const [aircraftData, statsData] = await Promise.all([
-                    fetch('/api/aircraft').then(r => r.json()),
-                    fetch('/api/stats').then(r => r.json())
+                    this.fetchAPI('aircraft'),
+                    this.fetchAPI('stats')
                 ]);
 
                 this.updateAircraft(aircraftData);
