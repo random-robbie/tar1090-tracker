@@ -16,12 +16,27 @@ app = Flask(__name__, static_folder='/var/www/tar1090', static_url_path='')
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configuration from environment variables
-TAR1090_HOST = os.getenv('TAR1090_HOST', '192.168.1.100')
-TAR1090_PORT = int(os.getenv('TAR1090_PORT', '8080'))
-UPDATE_INTERVAL = int(os.getenv('UPDATE_INTERVAL', '1'))
-SHOW_HISTORY = os.getenv('SHOW_HISTORY', 'true').lower() == 'true'
-AUTO_CENTER = os.getenv('AUTO_CENTER', 'false').lower() == 'true'
+# Configuration from environment variables with null handling
+def get_env_value(key, default, value_type=str):
+    """Get environment variable with proper null handling"""
+    value = os.getenv(key, default)
+    if value is None or value == 'null' or value == '':
+        value = default
+    
+    if value_type == int:
+        return int(value)
+    elif value_type == float:
+        return float(value)
+    elif value_type == bool:
+        return str(value).lower() in ('true', '1', 'yes', 'on')
+    else:
+        return str(value)
+
+TAR1090_HOST = get_env_value('TAR1090_HOST', '192.168.1.100')
+TAR1090_PORT = get_env_value('TAR1090_PORT', 8080, int)
+UPDATE_INTERVAL = get_env_value('UPDATE_INTERVAL', 1, int)
+SHOW_HISTORY = get_env_value('SHOW_HISTORY', True, bool)
+AUTO_CENTER = get_env_value('AUTO_CENTER', False, bool)
 
 # Global variables to store aircraft data
 aircraft_data = {"aircraft": [], "now": 0, "messages": 0}
@@ -95,9 +110,9 @@ def get_config():
         "update_interval": UPDATE_INTERVAL,
         "show_history": SHOW_HISTORY,
         "auto_center": AUTO_CENTER,
-        "map_center_lat": float(os.getenv('MAP_CENTER_LAT', '40.7128')),
-        "map_center_lon": float(os.getenv('MAP_CENTER_LON', '-74.0060')),
-        "map_zoom": int(os.getenv('MAP_ZOOM', '8'))
+        "map_center_lat": get_env_value('MAP_CENTER_LAT', 40.7128, float),
+        "map_center_lon": get_env_value('MAP_CENTER_LON', -74.0060, float),
+        "map_zoom": get_env_value('MAP_ZOOM', 8, int)
     })
 
 @app.route('/health', methods=['GET'])
