@@ -225,15 +225,9 @@ class AircraftTracker {
             
             const aircraftIcon = L.divIcon({
                 html: `<div class="aircraft-icon-container" style="transform: rotate(${rotation}deg); width: ${iconSize}px; height: ${iconSize}px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${iconSize}" height="${iconSize}" style="display: block;">
-                        <!-- Main aircraft body -->
-                        <path fill="${color}" stroke="#000" stroke-width="1" d="M16 4L17.5 12L28 9L19 16L28 23L17.5 20L16 28L14.5 20L4 23L13 16L4 9L14.5 12L16 4Z"/>
-                        <!-- Aircraft cockpit -->
-                        <ellipse cx="16" cy="14" rx="1.5" ry="3" fill="#333" stroke="#000" stroke-width="0.5"/>
-                        <!-- Wing highlights -->
-                        <path fill="rgba(255,255,255,0.3)" stroke="none" d="M16 6L17 11L24 9.5L17 16L24 22.5L17 21L16 26L15 21L8 22.5L15 16L8 9.5L15 11L16 6Z"/>
-                        <!-- Registration marker -->
-                        <circle cx="16" cy="16" r="1.5" fill="#ff0000" stroke="#fff" stroke-width="1"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${iconSize}" height="${iconSize}" style="display: block;">
+                        <path fill="${color}" stroke="#000" stroke-width="1.5" d="M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z"/>
+                        <path fill="#ffffff" stroke="none" d="M19,15V14L12.5,10V4A1,1 0 0,0 11.5,3A1,1 0 0,0 10.5,4V10L4,14V15L10.5,13V18L9,19V20L11.5,19.5L14,20V19L12.5,18V13L19,15Z"/>
                     </svg>
                 </div>`,
                 className: 'aircraft-marker',
@@ -357,24 +351,24 @@ class AircraftTracker {
     }
 
     getAircraftIconSize(aircraft) {
-        // Size based on aircraft category or type - made larger for better visibility
+        // Size based on aircraft category or type - optimized for Material Design icon
         const category = aircraft.category || '';
         const type = aircraft.t || '';
         
         // Large aircraft (A380, B747, etc.)
-        if (type.includes('A38') || type.includes('B74') || category === 'A7') return 36;
+        if (type.includes('A38') || type.includes('B74') || category === 'A7') return 32;
         
         // Wide-body aircraft (B777, A330, etc.)
-        if (type.includes('B77') || type.includes('A33') || type.includes('A34') || category === 'A5') return 32;
+        if (type.includes('B77') || type.includes('A33') || type.includes('A34') || category === 'A5') return 28;
         
         // Narrow-body aircraft (A320, B737, etc.)  
-        if (type.includes('A32') || type.includes('B73') || category === 'A3') return 28;
+        if (type.includes('A32') || type.includes('B73') || category === 'A3') return 24;
         
         // Regional/Small aircraft
-        if (category === 'A1' || category === 'A2') return 24;
+        if (category === 'A1' || category === 'A2') return 20;
         
-        // Default size - increased for better visibility
-        return 28;
+        // Default size - good balance of visibility and performance
+        return 24;
     }
 
     createPopupContent(aircraft) {

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.13] - 2025-07-30
+
+### Fixed
+- Replaced star-shaped aircraft icons with proper Material Design airplane icons
+- Used clean, recognizable aircraft SVG from Material Design icon set
+- Optimized icon sizes (20-32px) for better visibility and performance
+- Enhanced aircraft icon styling with proper outline and fill
+
 ## [1.0.12] - 2025-07-30
 
 ### Added
